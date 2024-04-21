@@ -1,19 +1,30 @@
+# Use JDK 21 base image
+FROM adoptopenjdk/openjdk21:alpine-slim
 
-FROM maven
-FROM eclipse-temurin:21-jdk-alpine as build
-WORKDIR /workspace/app
+# Set the working directory in the container
+WORKDIR /app
 
+# Copy the Maven executable to the container image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the Maven wrapper files
+COPY mvnw.cmd .
+
+# Copy the project descriptor files
 COPY pom.xml .
+
+# Download the Maven dependencies (not the project dependencies)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the project source
 COPY src src
 
-RUN mvn install -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+# Build the Spring Boot application
+RUN ./mvnw package -DskipTests
 
-FROM eclipse-temurin:21-jdk-alpine
-VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","hello.Application"]
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
+# Run the Spring Boot application
+CMD ["java", "-jar", "target/CalculationService-1.0-SNAPSHOT.jar"]
