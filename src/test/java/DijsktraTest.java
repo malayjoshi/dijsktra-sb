@@ -5,7 +5,7 @@ import org.example.models.EdgeDTO;
 import org.example.models.GraphDTO;
 import org.example.models.ResponseDTO;
 
-import org.example.services.CalculationService;
+import org.example.services.DijsktraService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,13 +49,13 @@ public class DijsktraTest {
             }).toList()
     );
 
-    private final CalculationService service = new CalculationService();
+    private final DijsktraService service = new DijsktraService();
 
     @Test
     @DisplayName("Checking Exception Handling!")
     public void testExceptionDijsktra() {
         Exception exception = assertThrows(GraphException.class, () ->
-                service.calculateDijsktra(graphExDTO));
+                service.calculate(graphExDTO));
         assertEquals("Source and target nodes do not match", exception.getMessage());
     }
 
@@ -72,7 +72,7 @@ public class DijsktraTest {
         distances.put("2",5);
         distances.put("3",Integer.MAX_VALUE);
         distances.put("4",6);
-        ResponseDTO responseDTO = service.calculateDijsktra(graphDTO);
+        ResponseDTO responseDTO = service.calculate(graphDTO);
         assertEquals(new ResponseDTO(path,distances),responseDTO);
     }
 }
