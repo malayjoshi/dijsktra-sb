@@ -5,10 +5,6 @@ FROM maven
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the Maven executable to the container image
-COPY .mvn .mvn
-
-
 
 # Copy the project descriptor files
 COPY pom.xml .
@@ -20,7 +16,7 @@ RUN mvn dependency:go-offline -B
 COPY src src
 
 # Build the Spring Boot application
-RUN ./mvn package -DskipTests
+RUN mvn package -DskipTests
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
