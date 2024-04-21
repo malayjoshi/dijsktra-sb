@@ -1,5 +1,6 @@
 # Use JDK 21 base image
 FROM eclipse-temurin:21-jdk-alpine
+FROM maven
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,8 +9,7 @@ WORKDIR /app
 COPY mvnw .
 COPY .mvn .mvn
 
-# Copy the Maven wrapper files
-COPY mvnw.cmd .
+
 
 # Copy the project descriptor files
 COPY pom.xml .
