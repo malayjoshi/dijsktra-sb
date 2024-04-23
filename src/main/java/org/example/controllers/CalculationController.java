@@ -24,6 +24,8 @@ public class CalculationController {
         this.maxflowService = maxflowService;
     }
 
+
+
     @PostMapping("/calculate")
     private ResponseEntity<ResponseDTO> calculate(@RequestBody GraphDTO request) {
         if (request.getCalculationType().equals("dijsktra")) {
